@@ -30,8 +30,10 @@ const openDialog = () => {
 
 const fetchEquipments = async () => {
     try {
-        const response = await axios.get('/api/equipamentos');
+        const response = await axios.get('/equipamentos');
         equipments.value = response.data;
+
+        console.log(equipments.value);
     } catch (error) {
         console.error('Erro ao buscar equipamentos:', error);
     }
@@ -49,7 +51,7 @@ function toggle(equipment: Equipamento) {
 onMounted(() => {
     fetchEquipments();
     // Atualiza os sensores a cada 5 segundos
-    setInterval(atualizarSensores, 5000);
+    // setInterval(atualizarSensores, 5000);
 });
 </script>
 

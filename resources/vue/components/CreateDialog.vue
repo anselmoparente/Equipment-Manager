@@ -23,7 +23,7 @@ const close = () => {
 
 async function criarEquipamento() {
     try {
-        const response = await axios.post('/api/equipamentos', {
+        await axios.post('/equipamentos', {
             nome: nome.value,
             parametro: parametro.value,
             limite_min: limite_min.value,
