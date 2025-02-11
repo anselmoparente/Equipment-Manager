@@ -7,5 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::redirect("/", "/home");
 Route::resource('/home', HomeController::class)->only(['index']);
 
-Route::get('/equipments', [EquipamentoController::class, 'index']);
+Route::get('/equipmentos', [EquipamentoController::class, 'index']);
 Route::post('/equipments/{id}/toggle', [EquipamentoController::class, 'toggle']);
+Route::post('/equipamentos', [EquipamentoController::class, 'store']);

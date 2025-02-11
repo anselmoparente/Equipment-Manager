@@ -3,8 +3,10 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 import { Equipamento } from '../../models/Equipamento';
+import CreateDialog from '../components/CreateDialog.vue';
 
 const equipments = ref<Equipamento[]>([]);
+const isDialogOpen = ref<boolean>(false);
 
 const atualizarSensores = async () => {
     try {
@@ -18,6 +20,13 @@ const atualizarSensores = async () => {
     }
 };
 
+const close = () => {
+    isDialogOpen.value = false;
+};
+
+const openDialog = () => {
+    isDialogOpen.value = true;
+};
 
 const fetchEquipments = async () => {
     try {
@@ -48,7 +57,11 @@ onMounted(() => {
     <div class="background">
         <div class="content">
             <section class="area-section">
-                <p>Área dos Dispositivos</p>
+                <h1>Gerenciador de Equipamentos</h1>
+                <button @click="openDialog">
+                    <span class="material-symbols-outlined">add</span>
+                    <p> Adicionar equipamento</p>
+                </button>
             </section>
         </div>
         <div>
@@ -68,15 +81,52 @@ onMounted(() => {
             </ul>
         </div>
     </div>
+    <CreateDialog :isOpen="isDialogOpen" @close="close"></CreateDialog>
 </template>
 
 <style scoped>
+h1,
 p {
-    color: #032826;
     font-family: Montserrat;
+    margin: 0;
+}
+
+h1 {
+    color: #024C35;
     font-size: 32px;
     font-weight: 600;
+}
+
+p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+button {
+    background-color: white;
+    border: 2px solid #F6741C;
+    border-radius: 12px;
+    color: #F6741C;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     margin: 0;
+    padding: 8px;
+}
+
+button:hover {
+    background-color: #F6741C;
+    color: white;
+}
+
+button:active {
+    background-color: #D35614;
+    border: 2px solid #D35614;
+    color: white;
 }
 
 .area-section {
@@ -86,6 +136,7 @@ p {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     padding-block: 20px;
     padding-inline: 24px;
