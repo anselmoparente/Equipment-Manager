@@ -20,12 +20,10 @@ class MqttService
 
     public function publish($topic, $message)
     {
-        // Cria a instância do cliente MQTT
         $mqtt = new MqttClient($this->host, $this->port, $this->clientId);
 
         try {
             $mqtt->connect();
-            // Publica a mensagem no tópico (QoS 0)
             $mqtt->publish($topic, $message, 0);
             $mqtt->disconnect();
         } catch (\Exception $e) {

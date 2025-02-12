@@ -41,11 +41,24 @@ async function fetchEquipments() {
     }
 };
 
-function toggleStatus(equipment: Equipamento) {
-    const newStatus = equipment.status == true ? false : true;
-    axios.post(`/equipamentos/${equipment.id}/toggle`, { status: newStatus })
+function turnOn(equipment: Equipamento) {
+    axios.post(`/equipamentos/${equipment.id}/turnOn`)
         .then(() => { fetchEquipments(); })
         .catch(error => console.error(error));
+}
+
+function turnOff(equipment: Equipamento) {
+    axios.post(`/equipamentos/${equipment.id}/turnOff`)
+        .then(() => { fetchEquipments(); })
+        .catch(error => console.error(error));
+}
+
+function toggleStatus(equipment: Equipamento) {
+    if (equipment.status) {
+        turnOff(equipment);
+    } else {
+        turnOn(equipment);
+    }
 }
 
 onMounted(() => {

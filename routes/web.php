@@ -8,5 +8,6 @@ Route::redirect("/", "/home");
 Route::resource('/home', HomeController::class)->only(['index']);
 
 Route::get('/equipamentos', [EquipamentoController::class, 'index']);
-Route::post('/equipamentos/{id}/toggle', [EquipamentoController::class, 'toggle']);
+Route::post('/equipamentos/{id}/turnOn', [EquipamentoController::class, 'turnOn']);
+Route::post('/equipamentos/{id}/turnOff', [EquipamentoController::class, 'turnOff']);
 Route::post('/equipamentos', [EquipamentoController::class, 'store']);

@@ -25,30 +25,6 @@ class EquipamentoController extends Controller
         return response()->json($equipments);
     }
 
-    public function toggle(Request $request, $id)
-    {
-        $equipment = Equipamento::findOrFail($id);
-        $status = $request->input('status');
-        $equipment->status = $status;
-        $equipment->save();
-
-        if ($status) {
-            $range = $equipment->limite_max - $equipment->limite_min;
-            $offset = round($range * 0.2);
-            $min = $equipment->limite_min - $offset;
-            $max = $equipment->limite_max + $offset;
-            $value = mt_rand($min, $max);
-
-            $equipment->sensor->valor_atual = $value;
-        } else {
-            $equipment->sensor->valor_atual = null;
-        }
-
-        $equipment->sensor->save();
-
-        return response()->json($equipment);
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -75,5 +51,39 @@ class EquipamentoController extends Controller
             'message' => 'Equipamento criado com sucesso!',
             'equipamento' => $equipamento->load('sensor', 'alertas'),
         ], 201);
+    }
+
+    public function turnOn($id)
+    {
+        if (!$id) {
+            return response()->json(["error" => "ID do equipamento é inválido"], 400);
+        }
+
+        $equipamento = Equipamento::find($id);
+        if (!$equipamento) {
+            return response()->json(["error" => "Equipamento não encontrado"], 404);
+        }
+
+        $topic = "equipamento/{$id}/turnOn";
+        $this->mqttService->publish($topic, "Ligar o equipamento");
+
+        return response()->json(["message" => "Equipamento ligado"], 200);
+    }
+
+    public function turnOff($id)
+    {
+        if (!$id) {
+            return response()->json(["error" => "ID do equipamento é inválido"], 400);
+        }
+
+        $equipamento = Equipamento::find($id);
+        if (!$equipamento) {
+            return response()->json(["error" => "Equipamento não encontrado"], 404);
+        }
+
+        $topic = "equipamento/{$id}/turnOff";
+        $this->mqttService->publish($topic, "Ligar o equipamento");
+
+        return response()->json(["message" => "Equipamento desligado"], 200);
     }
 }
