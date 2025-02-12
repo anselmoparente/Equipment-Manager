@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\MqttSubscribeJob;
 use App\Models\Equipamento;
 use App\Models\Sensor;
+use App\Services\MqttService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class EquipamentoController extends Controller
 {
+    protected $mqttService;
+
+    public function __construct(MqttService $mqttService)
+    {
+        $this->mqttService = $mqttService;
+    }
+
     public function index()
     {
         $equipments = Equipamento::with(['sensor', 'alertas'])->get();
+        MqttSubscribeJob::dispatch($this->mqttService);
         return response()->json($equipments);
     }
 
@@ -54,7 +64,6 @@ class EquipamentoController extends Controller
             'parametro' => $request->parametro,
             'limite_min' => $request->limite_min,
             'limite_max' => $request->limite_max,
-            'topic' => 'equipamento/' . Str::slug($request->nome),
         ]);
 
         $sensor = Sensor::create([

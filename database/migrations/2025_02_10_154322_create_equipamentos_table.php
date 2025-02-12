@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('parametro');
             $table->float('limite_min');
             $table->float('limite_max');
-            $table->string('topic');
             $table->timestamps();
         });
     }
