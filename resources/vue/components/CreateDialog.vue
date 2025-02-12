@@ -21,7 +21,7 @@ const close = () => {
     emit('close');
 };
 
-async function criarEquipamento() {
+async function addEquipment() {
     try {
         await axios.post('/equipamentos', {
             nome: nome.value,
@@ -29,6 +29,8 @@ async function criarEquipamento() {
             limite_min: limite_min.value,
             limite_max: limite_max.value,
         });
+
+        emit('close', true);
     } catch (error) {
         console.error(error);
     }
@@ -40,7 +42,7 @@ async function criarEquipamento() {
     <div v-if="isOpen" class="dialog-overlay" @click="close">
         <div class="dialog-container" @click.stop>
             <h2>Adicionar Equipamento</h2>
-            <form @submit.prevent="criarEquipamento">
+            <form @submit.prevent="addEquipment">
                 <div class="dialog-field">
                     <label for="nome">Nome</label>
                     <input type="text" id="nome" v-model="nome" required />

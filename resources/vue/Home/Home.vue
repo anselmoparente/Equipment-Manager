@@ -21,7 +21,10 @@ const atualizarSensores = async () => {
     }
 };
 
-const close = () => {
+const close = (update: boolean | null = false) => {
+    if (update) {
+        fetchEquipments();
+    }
     isDialogOpen.value = false;
 };
 
@@ -33,7 +36,6 @@ async function fetchEquipments() {
     try {
         const response = await axios.get('/equipamentos');
         equipments.value = response.data;
-
     } catch (error) {
         console.error('Erro ao buscar equipamentos:', error);
     }
