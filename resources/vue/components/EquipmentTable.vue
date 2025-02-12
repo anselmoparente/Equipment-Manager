@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Equipamento } from '../../models/Equipamento';
 
 const emit = defineEmits(['toggleStatus']);
 
-defineProps({
+const props = defineProps({
     equipments: { type: Array<Equipamento>, required: true },
 });
 
 const toggleStatus = (equipment: Equipamento) => {
     emit('toggleStatus', equipment);
 };
+
+const sortedEquipments = computed(() => {
+    return [...props.equipments].sort((a, b) => Number(b.status) - Number(a.status));
+});
 </script>
 
 <template>
@@ -41,7 +46,7 @@ const toggleStatus = (equipment: Equipamento) => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="equipment in equipments" :key="equipment.id">
+                <tr v-for="equipment in sortedEquipments" :key="equipment.id">
                     <td>
                         <p>{{ equipment.nome }}</p>
                     </td>
