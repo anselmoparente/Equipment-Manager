@@ -29,23 +29,20 @@ const openDialog = () => {
     isDialogOpen.value = true;
 };
 
-const fetchEquipments = async () => {
+async function fetchEquipments() {
     try {
         const response = await axios.get('/equipamentos');
         equipments.value = response.data;
 
-        console.log(equipments.value);
     } catch (error) {
         console.error('Erro ao buscar equipamentos:', error);
     }
 };
 
-function toggle(equipment: Equipamento) {
+function toggleStatus(equipment: Equipamento) {
     const newStatus = equipment.status == true ? false : true;
-    axios.post(`/api/equipments/${equipment.id}/toggle`, { status: newStatus })
-        .then(() => {
-            this.fetchEquipments();
-        })
+    axios.post(`/equipamentos/${equipment.id}/toggle`, { status: newStatus })
+        .then(() => { fetchEquipments(); })
         .catch(error => console.error(error));
 }
 
@@ -67,7 +64,7 @@ onMounted(() => {
                 </button>
             </section>
             <section class="body-section">
-                <EquipmentTable :equipments="equipments"></EquipmentTable>
+                <EquipmentTable :equipments="equipments" @toggleStatus="toggleStatus"></EquipmentTable>
             </section>
         </div>
     </div>
