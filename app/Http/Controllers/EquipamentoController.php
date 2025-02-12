@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alerta;
 use App\Models\Equipamento;
 use App\Models\Sensor;
 use Illuminate\Http\Request;
@@ -16,12 +15,26 @@ class EquipamentoController extends Controller
         return response()->json($equipments);
     }
 
-    // Altera o status (ligar/desligar) do equipamento
     public function toggle(Request $request, $id)
     {
         $equipment = Equipamento::findOrFail($id);
-        $equipment->status = $request->input('status');
+        $status = $request->input('status');
+        $equipment->status = $status;
         $equipment->save();
+
+        if ($status) {
+            $range = $equipment->limite_max - $equipment->limite_min;
+            $offset = round($range * 0.2);
+            $min = $equipment->limite_min - $offset;
+            $max = $equipment->limite_max + $offset;
+            $value = mt_rand($min, $max);
+
+            $equipment->sensor->valor_atual = $value;
+        } else {
+            $equipment->sensor->valor_atual = null;
+        }
+
+        $equipment->sensor->save();
 
         return response()->json($equipment);
     }
