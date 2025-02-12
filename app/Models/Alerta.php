@@ -9,15 +9,14 @@ class Alerta extends Model
 {
     use HasFactory;
 
+    protected $table = 'alertas';
+
     protected $fillable = [
         'equipamento_id',
         'valor',
         'mensagem'
     ];
 
-    /**
-     * Relação: Um alerta pertence a um equipamento.
-     */
     public function equipamento()
     {
         return $this->belongsTo(Equipamento::class);

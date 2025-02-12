@@ -14,7 +14,6 @@
 
 <body style="margin: 0px">
     @inertia
-    @routes
 </body>
 
 </html>

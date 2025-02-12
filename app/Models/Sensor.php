@@ -16,9 +16,6 @@ class Sensor extends Model
         'valor_atual'
     ];
 
-    /**
-     * Relação: Um sensor pertence a um equipamento.
-     */
     public function equipamento()
     {
         return $this->belongsTo(Equipamento::class);

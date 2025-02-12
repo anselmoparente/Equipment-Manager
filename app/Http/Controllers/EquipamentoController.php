@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alerta;
 use App\Models\Equipamento;
 use App\Models\Sensor;
 use Illuminate\Http\Request;
@@ -9,10 +10,9 @@ use Illuminate\Support\Str;
 
 class EquipamentoController extends Controller
 {
-    // Lista todos os equipamentos para o Gerenciador
     public function index()
     {
-        $equipments = Equipamento::all();
+        $equipments = Equipamento::with(['sensor', 'alertas'])->get();
         return response()->json($equipments);
     }
 
@@ -51,7 +51,7 @@ class EquipamentoController extends Controller
 
         return response()->json([
             'message' => 'Equipamento criado com sucesso!',
-            'equipamento' => $equipamento,
+            'equipamento' => $equipamento->load('sensor', 'alertas'),
         ], 201);
     }
 }

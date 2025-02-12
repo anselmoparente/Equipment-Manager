@@ -24,4 +24,9 @@ class Equipamento extends Model
     {
         return $this->hasOne(Sensor::class);
     }
+
+    public function alertas()
+    {
+        return $this->hasMany(Alerta::class);
+    }
 }

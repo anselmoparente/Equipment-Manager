@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { Equipamento } from '../../models/Equipamento';
 import CreateDialog from '../components/CreateDialog.vue';
+import EquipmentTable from '../components/EquipmentTable.vue';
 
 const equipments = ref<Equipamento[]>([]);
 const isDialogOpen = ref<boolean>(false);
@@ -65,22 +66,9 @@ onMounted(() => {
                     <p> Adicionar equipamento</p>
                 </button>
             </section>
-        </div>
-        <div>
-            <h2>Equipamentos</h2>
-            <ul>
-                <li v-for="equipment in equipments" :key="equipment.id">
-                    <strong>{{ equipment.nome }}</strong> - Status: {{ equipment.status }}
-                    <button @click="toggle(equipment)">{{ equipment.status == true ? 'Desligar' : 'Ligar' }}</button>
-
-                    <!-- Lista de alarmes para o equipamento -->
-                    <!-- <ul v-if="equipment. && equip.alarms.length">
-                        <li v-for="alarm in equip.alarms" :key="alarm.id">
-                            Alarme: {{ alarm.value }} em {{ alarm.created_at }}
-                        </li>
-                    </ul> -->
-                </li>
-            </ul>
+            <section class="body-section">
+                <EquipmentTable :equipments="equipments"></EquipmentTable>
+            </section>
         </div>
     </div>
     <CreateDialog :isOpen="isDialogOpen" @close="close"></CreateDialog>
@@ -144,6 +132,15 @@ button:active {
     padding-inline: 24px;
 }
 
+.body-section {
+    background-color: white;
+    border: 1px solid #B0B8B3;
+    border-radius: 24px;
+    padding-block: 20px;
+    padding-inline: 24px;
+    height: 100%;
+}
+
 .background {
     background-color: #F0F5F2;
     display: flex;
@@ -156,6 +153,7 @@ button:active {
 .content {
     display: flex;
     flex-direction: column;
+    gap: 24px;
     padding: 32px;
     height: 100%;
     width: 100%;
