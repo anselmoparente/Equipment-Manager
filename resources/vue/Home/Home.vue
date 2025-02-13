@@ -9,18 +9,6 @@ import EquipmentTable from '../components/EquipmentTable.vue';
 const equipments = ref<Equipamento[]>([]);
 const isDialogOpen = ref<boolean>(false);
 
-const atualizarSensores = async () => {
-    try {
-        // Chama a API para atualizar os sensores
-        await axios.post('/api/sensor/atualizar');
-        console.log('Sensores atualizados!');
-        // Após a atualização, busca os equipamentos e sensores para exibição
-        fetchEquipments();
-    } catch (error) {
-        console.error('Erro ao atualizar sensores:', error);
-    }
-};
-
 const close = (update: boolean | null = false) => {
     if (update) {
         fetchEquipments();
@@ -40,6 +28,18 @@ async function fetchEquipments() {
         console.error('Erro ao buscar equipamentos:', error);
     }
 };
+
+async function update() {
+    try {
+        console.log('teste');
+        await axios.get('/sensores/update')
+            .then(() => { fetchEquipments(); })
+            .catch(error => console.error(error));
+        console.log('deu bom');
+    } catch (error) {
+        console.error('Erro ao atualizar sensores:', error);
+    }
+}
 
 function turnOn(equipment: Equipamento) {
     axios.post(`/equipamentos/${equipment.id}/turnOn`)
@@ -63,8 +63,7 @@ function toggleStatus(equipment: Equipamento) {
 
 onMounted(() => {
     fetchEquipments();
-    // Atualiza os sensores a cada 5 segundos
-    // setInterval(atualizarSensores, 5000);
+    setInterval(update, 10000);
 });
 </script>
 

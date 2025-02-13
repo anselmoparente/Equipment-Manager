@@ -38,7 +38,7 @@ const sortedEquipments = computed(() => {
                         <p>Status</p>
                     </th>
                     <th>
-                        <p>Valor</p>
+                        <p>Valor Atual</p>
                     </th>
                     <th>
                         <p>Alertas</p>
