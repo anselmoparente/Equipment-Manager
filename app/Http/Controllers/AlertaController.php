@@ -9,7 +9,7 @@ class AlertaController extends Controller
 {
     public function index()
     {
-        $alerts = Alerta::with(['equipamentos'])->get();
+        $alerts = Alerta::all();
         return response()->json($alerts);
     }
 }

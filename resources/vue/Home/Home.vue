@@ -3,21 +3,30 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 import { Equipamento } from '../../models/Equipamento';
+import AlertDialog from '../components/AlertDialog.vue';
 import CreateDialog from '../components/CreateDialog.vue';
 import EquipmentTable from '../components/EquipmentTable.vue';
 
 const equipments = ref<Equipamento[]>([]);
-const isDialogOpen = ref<boolean>(false);
+const equipmentSelected = ref<Equipamento>();
+const isAlertDialogOpen = ref<boolean>(false);
+const isCreateDialogOpen = ref<boolean>(false);
 
 const close = (update: boolean | null = false) => {
     if (update) {
         fetchEquipments();
     }
-    isDialogOpen.value = false;
+    isAlertDialogOpen.value = false;
+    isCreateDialogOpen.value = false;
 };
 
-const openDialog = () => {
-    isDialogOpen.value = true;
+const openAlertDialog = (equipment: Equipamento) => {
+    equipmentSelected.value = equipment;
+    isAlertDialogOpen.value = true;
+};
+
+const openCreateDialog = () => {
+    isCreateDialogOpen.value = true;
 };
 
 async function fetchEquipments() {
@@ -31,11 +40,9 @@ async function fetchEquipments() {
 
 async function update() {
     try {
-        console.log('teste');
         await axios.get('/sensores/update')
             .then(() => { fetchEquipments(); })
             .catch(error => console.error(error));
-        console.log('deu bom');
     } catch (error) {
         console.error('Erro ao atualizar sensores:', error);
     }
@@ -72,17 +79,19 @@ onMounted(() => {
         <div class="content">
             <section class="area-section">
                 <h1>Gerenciador de Equipamentos</h1>
-                <button @click="openDialog">
+                <button @click="openCreateDialog">
                     <span class="material-symbols-outlined">add</span>
                     <p> Adicionar equipamento</p>
                 </button>
             </section>
             <section class="body-section">
-                <EquipmentTable :equipments="equipments" @toggleStatus="toggleStatus"></EquipmentTable>
+                <EquipmentTable :equipments="equipments" @openAlertDialog="openAlertDialog($event)"
+                    @toggleStatus="toggleStatus"></EquipmentTable>
             </section>
         </div>
     </div>
-    <CreateDialog :isOpen="isDialogOpen" @close="close"></CreateDialog>
+    <AlertDialog :isOpen="isAlertDialogOpen" :equipment="equipmentSelected" @close="close"></AlertDialog>
+    <CreateDialog :isOpen="isCreateDialogOpen" @close="close"></CreateDialog>
 </template>
 
 <style scoped>

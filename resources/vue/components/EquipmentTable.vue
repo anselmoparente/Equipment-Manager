@@ -2,11 +2,15 @@
 import { computed } from 'vue';
 import { Equipamento } from '../../models/Equipamento';
 
-const emit = defineEmits(['toggleStatus']);
+const emit = defineEmits(['openAlertDialog', 'toggleStatus']);
 
 const props = defineProps({
     equipments: { type: Array<Equipamento>, required: true },
 });
+
+const openAlertDialog = (equipment: Equipamento) => {
+    emit('openAlertDialog', equipment);
+};
 
 const toggleStatus = (equipment: Equipamento) => {
     emit('toggleStatus', equipment);
@@ -46,7 +50,7 @@ const sortedEquipments = computed(() => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="equipment in sortedEquipments" :key="equipment.id">
+                <tr v-for="equipment in sortedEquipments" :key="equipment.id" @click="openAlertDialog(equipment)">
                     <td>
                         <p>{{ equipment.nome }}</p>
                     </td>
