@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Alerta;
+use App\Models\Equipamento;
 use Illuminate\Support\Facades\Log;
 use PhpMqtt\Client\MqttClient;
 
@@ -31,8 +33,38 @@ class MqttService
         try {
             $this->mqtt->connect();
 
-            $this->mqtt->subscribe('#', function ($topic, $message) {
-                Log::info("Mensagem recebida do tópico {$topic}: {$message}");
+            $this->mqtt->subscribe('equipamento/#', function ($topic, $message) {
+                $parts = explode('/', $topic);
+
+                $equipamentoId = $parts[1];
+                $evento = $parts[2];
+
+                switch ($evento) {
+                    case 'turnOn':
+                        $equipamento = Equipamento::find($equipamentoId);
+                        $equipamento->status = true;
+                        $equipamento->save();
+                        $equipamento->sensor->generateValue($equipamento);
+                        break;
+
+                    case 'turnOff':
+                        $equipamento = Equipamento::find($equipamentoId);
+                        $equipamento->status = false;
+                        $equipamento->save();
+                        $equipamento->sensor->generateValue($equipamento);
+                        break;
+
+                    case 'alert':
+                        $equipamento = Equipamento::find($equipamentoId);
+                        Alerta::create([
+                            'equipamento_id' => $equipamento->id,
+                            'mensagem' => $message,
+                        ]);
+                        break;
+
+                    default:
+                        break;
+                }
             }, 0);
 
             $this->mqtt->loop(true);
