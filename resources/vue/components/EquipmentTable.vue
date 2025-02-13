@@ -63,9 +63,9 @@ const sortedEquipments = computed(() => {
                     <td>
                         <p>{{ equipment.limite_max }}</p>
                     </td>
-                    <td>
+                    <td @click.stop>
                         <label class="switch">
-                            <input type="checkbox" :checked="equipment.status" @change="toggleStatus(equipment)" />
+                            <input type="checkbox" :checked="equipment.status" @change=" toggleStatus(equipment)" />
                             <span class="slider"></span>
                         </label>
                     </td>
