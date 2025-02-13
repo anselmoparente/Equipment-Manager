@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import { Alerta } from '../../models/Alerta';
 import { Equipamento } from '../../models/Equipamento';
@@ -29,24 +29,31 @@ function formatDate(date: Date) {
 
 async function fetchAlerts() {
     try {
-        const response = await axios.get('/alertas');
+        const response = await axios.get('/alertas', {
+            params: {
+                equipamento_id: props.equipment?.id
+            }
+        });
         alerts.value = response.data.map((item: any) =>
             new Alerta(
                 item.id,
                 item.equipamento_id,
                 item.valor,
                 item.mensagem,
-                new Date(item.created_at) // Converta para Date
+                new Date(item.created_at)
             )
         );
-        console.log(alerts.value);
     } catch (error) {
         console.error('Erro ao buscar alertas:', error);
     }
 };
 
-onMounted(() => {
-    fetchAlerts();
+watch(() => props.isOpen, (isOpen) => {
+    if (isOpen && props.equipment) {
+        fetchAlerts();
+    } else {
+        alerts.value = [];
+    }
 });
 </script>
 

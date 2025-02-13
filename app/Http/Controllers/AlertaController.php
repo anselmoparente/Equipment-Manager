@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class AlertaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $alerts = Alerta::all();
+        $query = Alerta::query();
+
+        if ($request->has('equipamento_id')) {
+            $query->where('equipamento_id', $request->equipamento_id);
+        }
+
+        $alerts = $query->get();
         return response()->json($alerts);
     }
 }
