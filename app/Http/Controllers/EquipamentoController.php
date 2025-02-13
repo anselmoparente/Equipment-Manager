@@ -90,7 +90,7 @@ class EquipamentoController extends Controller
         $equipamento->sensor->eraseValue();
 
         $topic = "equipamento/{$id}/turnOff";
-        $this->mqttService->publish($topic, "Ligar o equipamento");
+        $this->mqttService->publish($topic, "Desligar o equipamento");
 
         return response()->json(["message" => "Equipamento desligado"], 200);
     }

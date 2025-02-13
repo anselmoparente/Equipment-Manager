@@ -18,10 +18,27 @@ const close = () => {
     emit('close');
 };
 
+function formatDate(date: Date) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+    const year = date.getFullYear();
+    return `${hours}:${minutes} | ${day}/${month}/${year}`;
+}
+
 async function fetchAlerts() {
     try {
         const response = await axios.get('/alertas');
-        alerts.value = response.data;
+        alerts.value = response.data.map((item: any) =>
+            new Alerta(
+                item.id,
+                item.equipamento_id,
+                item.valor,
+                item.mensagem,
+                new Date(item.created_at) // Converta para Date
+            )
+        );
         console.log(alerts.value);
     } catch (error) {
         console.error('Erro ao buscar alertas:', error);
@@ -36,26 +53,26 @@ onMounted(() => {
 <template>
     <div v-if="isOpen" class="dialog-overlay" @click="close">
         <div class="dialog-container" @click.stop>
-            <h1>Alertas</h1>
+            <h1>{{ equipment != null ? equipment.nome : '' }}</h1>
             <div class="equipments-table">
                 <table>
                     <thead>
                         <tr>
                             <th>
-                                <p>Equipamento</p>
+                                <p>Alerta</p>
                             </th>
                             <th>
-                                <p>Alerta</p>
+                                <p>Data</p>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="alert in alerts" :key="alert.id">
                             <td>
-                                <p>{{ equipment != null ? equipment.nome : '' }}</p>
+                                <p> {{ alert.mensagem }}</p>
                             </td>
                             <td>
-                                <p>{{ alert.mensagem }}</p>
+                                <p>{{ formatDate(alert.created_at) }}</p>
                             </td>
                         </tr>
                     </tbody>
@@ -146,11 +163,12 @@ h1 {
 
 .equipments-table th:first-child,
 .equipments-table td:first-child {
-    width: 20%;
+    width: 80%;
+    text-align: left;
 }
 
 .equipments-table th:last-child,
 .equipments-table td:last-child {
-    width: 80%;
+    width: 20%;
 }
 </style>
