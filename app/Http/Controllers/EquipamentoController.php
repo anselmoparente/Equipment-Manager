@@ -64,6 +64,10 @@ class EquipamentoController extends Controller
             return response()->json(["error" => "Equipamento não encontrado"], 404);
         }
 
+        $equipamento->status = true;
+        $equipamento->save();
+        $equipamento->sensor->generateValue($equipamento);
+
         $topic = "equipamento/{$id}/turnOn";
         $this->mqttService->publish($topic, "Ligar o equipamento");
 
@@ -80,6 +84,10 @@ class EquipamentoController extends Controller
         if (!$equipamento) {
             return response()->json(["error" => "Equipamento não encontrado"], 404);
         }
+
+        $equipamento->status = false;
+        $equipamento->save();
+        $equipamento->sensor->eraseValue();
 
         $topic = "equipamento/{$id}/turnOff";
         $this->mqttService->publish($topic, "Ligar o equipamento");

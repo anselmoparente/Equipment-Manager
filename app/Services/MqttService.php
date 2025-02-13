@@ -30,15 +30,12 @@ class MqttService
     {
         try {
             $this->mqtt->connect();
-            Log::info("Conectado ao broker MQTT e ouvindo todos os tópicos...");
 
             $this->mqtt->subscribe('#', function ($topic, $message) {
                 Log::info("Mensagem recebida do tópico {$topic}: {$message}");
             }, 0);
 
-            $this->mqtt->loop();
-
-            $this->mqtt->disconnect();
+            $this->mqtt->loop(true);
         } catch (\Exception $e) {
             Log::error("Erro ao ouvir os tópicos MQTT: " . $e->getMessage());
         }
